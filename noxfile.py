@@ -49,7 +49,7 @@ def _install_requirements(
     *passed_requirements,  # pylint: disable=unused-argument
     install_coverage_requirements=True,
     install_test_requirements=True,
-    install_source=False,
+    install_source=True
     install_salt=True,
     install_extras=None,
 ):
