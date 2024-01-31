@@ -46,6 +46,7 @@ jobs:
         env:
           SALT_REQUIREMENT: salt==${{ matrix.salt }}
           PYTHON_VERSIONS: ${{ matrix.py }}
+          API_BACKEND: ${{ matrix.netapi }}
         run: |
           nox --force-color -e tests --install-only
 
