@@ -7,20 +7,12 @@ import nox
 from nox.command import CommandFailed
 
 
-# Variable that associates python versions with salt versions
-# Edit variables and API backend entries
-#
-# For example: when running nox -e tests
-# sessions will run with python 3.8 that installs salt versions 3005.4, 3006.4, and master branch
-
 API_BACKEND = [os.environ.get("API_BACKEND")] or ["cherrypy", "tornado"]
-
 PYTHON_VERSIONS = [os.environ.get("PYTHON_VERSIONS")] or ["3.8", "3.9", "3.10", "3.11"]
-
 
 # Nox options
 # Reuse existing virtualenvs
-nox.options.reuse_existing_virtualenvs = False
+nox.options.reuse_existing_virtualenvs = True
 #  Don't fail on missing interpreters
 nox.options.error_on_missing_interpreters = False
 
