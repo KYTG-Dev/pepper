@@ -13,9 +13,10 @@ from nox.command import CommandFailed
 # For example: when running nox -e tests
 # sessions will run with python 3.8 that installs salt versions 3005.4, 3006.4, and master branch
 
-API_BACKEND = ["cherrypy", "tornado"]
+API_BACKEND = [os.environ.get("API_BACKEND")] or ["cherrypy", "tornado"]
 
-PYTHON_VERSIONS = ("3", "3.8", "3.9", "3.10", "3.11")
+PYTHON_VERSIONS = [os.environ.get("PYTHON_VERSIONS")] or ["3.8", "3.9", "3.10", "3.11"]
+
 
 # Nox options
 # Reuse existing virtualenvs
@@ -107,7 +108,7 @@ Nox session to run tests for corresponding python versions and salt versions
 """
 
 
-@nox.session(python=list(PYTHON_VERSIONS))
+@nox.session(python=PYTHON_VERSIONS)
 @nox.parametrize("api_backend", API_BACKEND)
 def tests(session, api_backend):
     _install_requirements(session)
@@ -124,6 +125,29 @@ def tests(session, api_backend):
         "-ra",
         "-s",
     ]
+
+    sitecustomize_dir = session.run("salt-factories", "--coverage", silent=True, log=False)
+    python_path_env_var = os.environ.get("PYTHONPATH") or None
+
+    if python_path_env_var is None:
+        python_path_env_var = sitecustomize_dir
+    else:
+        python_path_entries = python_path_env_var.split(os.pathsep)
+        if sitecustomize_dir in python_path_entries:
+            python_path_entries.remove(sitecustomize_dir)
+        python_path_entries.insert(0, sitecustomize_dir)
+        python_path_env_var = os.pathsep.join(python_path_entries)
+
+    env = {
+        # The updated python path so that sitecustomize is importable
+        "PYTHONPATH": python_path_env_var,
+        # The full path to the .coverage data file. Makes sure we always write
+        # them to the same directory
+        "COVERAGE_FILE": str(COVERAGE_REPORT_DB),
+        # Instruct sub processes to also run under coverage
+        "COVERAGE_PROCESS_START": str(REPO_ROOT / ".coveragerc"),
+    }
+
     if session._runner.global_config.forcecolor:
         args.append("--color=yes")
     if not session.posargs:
