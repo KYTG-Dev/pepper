@@ -113,7 +113,6 @@ Nox session to run tests for corresponding python versions and salt versions
 def tests(session, api_backend):
     _install_requirements(session)
 
-    session.run("coverage", "erase")
     args = [
         "--rootdir",
         str(REPO_ROOT),
