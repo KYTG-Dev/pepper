@@ -8,8 +8,6 @@ jobs:
   pre-commit:
     name: Pre-Commit
     runs-on: ubuntu-latest
-    container:
-      image: python:3.10.9-slim-buster
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
