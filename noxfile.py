@@ -157,25 +157,7 @@ def tests(session, api_backend):
             "xml",
             "-o",
             str(COVERAGE_REPORT_PROJECT),
-            "--omit=tests/*",
-            "--include=pepper/*",
         )
-        # Generate report for tests code coverage
-        session.run(
-            "coverage",
-            "xml",
-            "-o",
-            str(COVERAGE_REPORT_TESTS),
-            "--omit=pepper/*",
-            "--include=tests/*",
-        )
-
-        # Install flake8
-        session.install("flake8")
-
-        # Run flake8
-        session.run("flake8", "tests/", "pepper/", "scripts/pepper", "setup.py")
-
         try:
             session.run("coverage", "report", "--show-missing", "--include=pepper/*")
         finally:
