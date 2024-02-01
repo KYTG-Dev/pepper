@@ -13,9 +13,9 @@ jobs:
         with:
           python-version: "3.8"
       - uses: actions/checkout@v3
-      - name: Install tox
-        run: python -m pip install tox
+      - name: Install nox
+        run: python -m pip install nox
       - name: Setup flake8
-        run: tox --notest -e flake8
+        run: nox --notest -e flake8
       - name: Run flake8
-        run: tox -e flake8
+        run: nox -e flake8
