@@ -6,7 +6,7 @@ on:
 
 jobs:
   pre-commit:
-    name: Pre-Commit
+    name: pre-commit
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
