@@ -98,6 +98,8 @@ def _install_requirements(
 """
 Nox session to run tests for corresponding python versions and salt versions
 """
+
+
 @nox.session(python=PYTHON_VERSIONS)
 @nox.parametrize("api_backend", API_BACKEND)
 def tests(session, api_backend):
@@ -162,6 +164,7 @@ def tests(session, api_backend):
             # Move the coverage DB to artifacts/coverage in order for it to be archived by CI
             if COVERAGE_REPORT_DB.exists():
                 shutil.move(str(COVERAGE_REPORT_DB), str(ARTIFACTS_DIR / COVERAGE_REPORT_DB.name))
+
 
 @nox.session(python="3.10")
 def flake8(session):

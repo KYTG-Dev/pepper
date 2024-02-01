@@ -22,7 +22,7 @@ jobs:
           pre-commit install
       - name: Run pre-commit
         run: pre-commit run --all-files
-    
+
   test:
     name: test ${{ matrix.py }} - ${{ matrix.netapi }} - ${{ matrix.salt }}
     runs-on: ubuntu-20.04
