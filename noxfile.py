@@ -168,8 +168,8 @@ def tests(session, api_backend):
 
 @nox.session(python="3.10")
 def flake8(session):
+    _install_requirements(session)
     # Install flake8
     session.install("flake8")
-
     # Run flake8
     session.run("flake8", "tests/", "pepper/", "scripts/pepper", "setup.py")
