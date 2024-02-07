@@ -69,12 +69,7 @@ jobs:
 
       - name: Install Test Requirements
         env:
-          SALT_REQUIREMENT: |
-            if [ "${{ matrix.salt }}" = "latest" ]; then
-              echo "salt==${{ steps.fetch_salt_version.outputs.salt_version }}"
-            else
-              echo "salt==${{ matrix.salt }}"
-            fi
+          SALT_REQUIREMENT: ${{ if eq(matrix.salt, 'latest') }}salt==${{ steps.fetch_salt_version.outputs.salt_version }}${{ else }}salt==${{ matrix.salt }}${{ endif }}
           PYTHON_VERSIONS: ${{ matrix.py }}
           API_BACKEND: ${{ matrix.netapi }}
         run: |
@@ -82,7 +77,7 @@ jobs:
 
       - name: Test
         env:
-          SALT_REQUIREMENT: salt==${{ matrix.salt }}
+          SALT_REQUIREMENT:  ${{ if eq(matrix.salt, 'latest') }}salt==${{ steps.fetch_salt_version.outputs.salt_version }}${{ else }}salt==${{ matrix.salt }}${{ endif }}
           PYTHON_VERSIONS: ${{ matrix.py }}
           API_BACKEND: ${{ matrix.netapi }}
           SKIP_REQUIREMENTS_INSTALL: YES
