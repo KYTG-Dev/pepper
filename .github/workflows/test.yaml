@@ -66,20 +66,22 @@ jobs:
         run: |
           latest_salt_version=$(curl -s https://pypi.org/pypi/salt/json | jq -r '.info.version')
           echo "::set-output name=salt_version::$latest_salt_version"
-
-      - name: Install Test Requirements
+      
+      - name: Install Test Requirements (latest Salt)
+        if: ${{ matrix.salt == 'latest' }}
         env:
-          SALT_REQUIREMENT: ${{ if eq(matrix.salt, 'latest') }}salt==${{ steps.fetch_salt_version.outputs.salt_version }}${{ else }}salt==${{ matrix.salt }}${{ endif }}
+          SALT_REQUIREMENT: salt==${{ steps.fetch_salt_version.outputs.salt_version }}
           PYTHON_VERSIONS: ${{ matrix.py }}
           API_BACKEND: ${{ matrix.netapi }}
         run: |
           nox --force-color -e tests --install-only
-
+          
       - name: Test
+        if: ${{ matrix.salt == 'latest' }}
         env:
-          SALT_REQUIREMENT:  ${{ if eq(matrix.salt, 'latest') }}salt==${{ steps.fetch_salt_version.outputs.salt_version }}${{ else }}salt==${{ matrix.salt }}${{ endif }}
           PYTHON_VERSIONS: ${{ matrix.py }}
           API_BACKEND: ${{ matrix.netapi }}
           SKIP_REQUIREMENTS_INSTALL: YES
+          SALT_REQUIREMENT: salt==${{ steps.fetch_salt_version.outputs.salt_version }}
         run: |
           nox --force-color -e tests -- -vv tests/
