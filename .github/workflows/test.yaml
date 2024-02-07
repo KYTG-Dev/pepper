@@ -38,8 +38,8 @@ jobs:
           - "cherrypy"
           - "tornado"
         salt:
+          - "v3006.5"
           - "latest"
-
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.py }}
@@ -60,9 +60,21 @@ jobs:
           python -m pip install --upgrade pip
           pip install nox
 
+      - name: Fetch latest Salt version
+        if: ${{ matrix.salt == 'latest' }}
+        id: fetch_salt_version
+        run: |
+          latest_salt_version=$(curl -s https://pypi.org/pypi/salt/json | jq -r '.info.version')
+          echo "::set-output name=salt_version::$latest_salt_version"
+
       - name: Install Test Requirements
         env:
-          SALT_REQUIREMENT: salt==${{ matrix.salt }}
+          SALT_REQUIREMENT: |
+            if [ "${{ matrix.salt }}" = "latest" ]; then
+              echo "salt==${{ steps.fetch_salt_version.outputs.salt_version }}"
+            else
+              echo "salt==${{ matrix.salt }}"
+            fi
           PYTHON_VERSIONS: ${{ matrix.py }}
           API_BACKEND: ${{ matrix.netapi }}
         run: |
